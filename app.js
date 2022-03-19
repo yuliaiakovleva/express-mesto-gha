@@ -22,14 +22,15 @@ app.use('/', (req, res, next) => {
   next();
 });
 
-app.use((req, res) => {
-  res.status(404).send({ message: 'Путь не найден'})
-})
+
 
 app.use('/', require('./routes/users'));
 
 app.use('/', require('./routes/cards'));
 
+app.use((req, res) => {
+  res.status(404).send({ message: 'Путь не найден'})
+})
 
 // делаю так, чтобы подключение к бд происходило раньше чем запуск сервера
 
