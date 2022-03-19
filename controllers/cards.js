@@ -3,19 +3,25 @@ const Card = require('../models/card');
 module.exports.getCards = (req, res) => {
   Card
     .find({})
-    .then((cards) => res.status(200).res.send({ data: cards }))
+    .then((cards) => {
+      if(cards) {
+        res.status(200).res.send({ data: cards })
+      } else {
+        res.status(400).send({ message: 'Пользователь не найден'})
+      }
+    })
     .catch((err) => {
       if (err.errors.about.name === 'ValidatorError') {
-        const ERROR_CODE = 400;
-        res
-          .status(ERROR_CODE)
+        // const ERROR_CODE = 400;
+       return res
+          .status(400)
           .send({
             message: 'Переданы некорректные данные при создании карточки.',
           });
       } else {
-        const ERROR_CODE = 500;
-        res
-          .status(ERROR_CODE)
+        // const ERROR_CODE = 500;
+        return res
+          .status(500)
           .send({ message: `Произошла ошибка: ${err.name} ${err.message}` });
       }
     });
@@ -50,7 +56,7 @@ module.exports.deleteCard = (req, res) => {
   // console.log(cardId);
   Card
     .findByIdAndRemove(cardId)
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.status(200).res.send({ data: card }))
     .catch((err) => {
       if (err.errors.about.name === 'DocumentNotFoundError') {
         const ERROR_CODE = 404;
