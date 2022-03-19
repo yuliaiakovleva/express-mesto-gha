@@ -4,7 +4,7 @@ const User = require('../models/user');
 module.exports.getUsers = (req, res) => {
   User
     .find({})
-    .then((users) => res.send({ data: users }))
+    .then((users) => res.status(200).res.send({ data: users }))
     .catch((err) => {
       if (err.errors.about.name === 'ValidatorError') {
         const ERROR_CODE = 400;
@@ -21,7 +21,7 @@ module.exports.getUserById = (req, res) => {
   // console.log(userId);
   User
     .findById(userId)
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.status(200).res.send({ data: user }))
     .catch((err) => {
       if (err.errors.about.name === 'DocumentNotFoundError') {
         const ERROR_CODE = 404;
@@ -63,7 +63,7 @@ module.exports.editUser = (req, res) => {
         upsert: true, // если пользователь не найден, он будет создан
       },
     )
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.status(200).res.send({ data: user }))
     .catch((err) => {
       if (err.errors.about.name === 'ValidatorError') {
         const ERROR_CODE = 400;
@@ -92,7 +92,7 @@ module.exports.editAvatar = (req, res) => {
         upsert: true, // если пользователь не найден, он будет создан
       },
     )
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.status(200).res.send({ data: user }))
     .catch((err) => {
       if (err.errors.about.name === 'ValidatorError') {
         const ERROR_CODE = 400;

@@ -3,7 +3,7 @@ const Card = require('../models/card');
 module.exports.getCards = (req, res) => {
   Card
     .find({})
-    .then((cards) => res.send({ data: cards }))
+    .then((cards) => res.status(200).res.send({ data: cards }))
     .catch((err) => {
       if (err.errors.about.name === 'ValidatorError') {
         const ERROR_CODE = 400;
@@ -27,7 +27,7 @@ module.exports.createCard = (req, res) => {
   const owner = req.user._id;
   Card
     .create({ name, link, owner })
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.status(200).res.send({ data: card }))
     .catch((err) => {
       if (err.errors.about.name === 'ValidatorError') {
         const ERROR_CODE = 400;
@@ -77,7 +77,7 @@ module.exports.likeCard = (req, res) => {
       //     upsert: true // если пользователь не найден, он будет создан
       // }
     )
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.status(200).res.send({ data: card }))
     .catch((err) => {
       if (err.errors.about.name === 'ValidatorError') {
         const ERROR_CODE = 400;
@@ -108,7 +108,7 @@ module.exports.dislikeCard = (req, res) => {
       { $pull: { likes: req.user._id } }, // убрать _id из массива
       { new: true },
     )
-    .then((card) => res.send({ data: card }))
+    .then((card) => res.status(200).res.send({ data: card }))
     .catch((err) => {
       if (err.errors.about.name === 'ValidatorError') {
         const ERROR_CODE = 400;
