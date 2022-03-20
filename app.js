@@ -2,10 +2,7 @@ const express = require('express');
 
 const app = express();
 const mongoose = require('mongoose');
-// const routes = require('./routes/users.js')
 const bodyParser = require('body-parser');
-const read = require('body-parser/lib/read');
-const res = require('express/lib/response');
 
 const { PORT = 3000 } = process.env;
 
@@ -22,15 +19,13 @@ app.use('/', (req, res, next) => {
   next();
 });
 
-
-
 app.use('/', require('./routes/users'));
 
 app.use('/', require('./routes/cards'));
 
 app.use((req, res) => {
-  res.status(404).send({ message: 'Путь не найден'})
-})
+  res.status(404).send({ message: 'Путь не найден' });
+});
 
 // делаю так, чтобы подключение к бд происходило раньше чем запуск сервера
 
