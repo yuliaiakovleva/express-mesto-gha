@@ -28,15 +28,14 @@ module.exports.createCard = (req, res) => {
     .catch((err) => {
       if (err.name === "ValidationError") {
         const ERROR_CODE = 400;
-        res.status(ERROR_CODE).send({
+        return res.status(ERROR_CODE).send({
           message: "Переданы некорректные данные при создании карточки.",
         });
-      } else {
+      }
         const ERROR_CODE = 500;
-        res
+        return res
           .status(ERROR_CODE)
           .send({ message: `Произошла ошибка: ${err.name} ${err.message}` });
-      }
     });
 };
 
