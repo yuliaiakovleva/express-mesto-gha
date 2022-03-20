@@ -5,7 +5,7 @@ module.exports.getCards = (req, res) => {
     .find({})
     .then((cards) => {res.send({ data: cards })})
     .catch((err) => {
-      if (err.errors.about.name === 'ValidatorError') {
+      if (err.name === 'ValidationError') {
         // const ERROR_CODE = 400;
        return res
           .status(400)
@@ -29,7 +29,7 @@ module.exports.createCard = (req, res) => {
     .create({ name, link, owner })
     .then((card) => res.send({ data: card }))
     .catch((err) => {
-      if (err.errors.about.name === 'ValidatorError') {
+      if (err.name === 'ValidationError') {
         const ERROR_CODE = 400;
         res
           .status(ERROR_CODE)
@@ -79,7 +79,7 @@ module.exports.likeCard = (req, res) => {
     })
     .then((card) => res.send({ data: card }))
     .catch((err) => {
-      if (err.name === 'ValidatorError') {
+      if (err.name === 'ValidationError') {
         const ERROR_CODE = 400;
         res
           .status(ERROR_CODE)
@@ -112,7 +112,7 @@ module.exports.dislikeCard = (req, res) => {
     })
     .then((card) => res.send({ data: card }))
     .catch((err) => {
-      if (err.name === 'ValidatorError') {
+      if (err.name === 'ValidationError') {
         const ERROR_CODE = 400;
         res
           .status(ERROR_CODE)
