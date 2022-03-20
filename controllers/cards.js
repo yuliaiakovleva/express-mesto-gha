@@ -50,16 +50,16 @@ module.exports.deleteCard = (req, res) => {
   // console.log(cardId);
   Card
     .findByIdAndRemove(cardId)
+    .orFail(() => {
+      const error = new Error('Карточка с указанным _id не найдена.');
+      error.statusCode = 404;
+      throw error;
+    })
     .then((card) => res.send({ data: card }))
     .catch((err) => {
-      if (err.errors.about.name === 'DocumentNotFoundError') {
-        const ERROR_CODE = 404;
-        res
-          .status(ERROR_CODE)
-          .send({
-            message: 'Переданы некорректные данные при создании карточки.',
-          });
-      }
+      res
+      .status(500)
+      .send({ message: `Произошла ошибка: ${err.name} ${err.message}` });
     });
 };
 
@@ -70,29 +70,26 @@ module.exports.likeCard = (req, res) => {
     .findByIdAndUpdate(
       cardId,
       { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
-      { new: true },
-      // {
-      //     new: true, // обработчик then получит на вход обновлённую запись
-      //     runValidators: true, // данные будут валидированы перед изменением
-      //     upsert: true // если пользователь не найден, он будет создан
-      // }
+      { new: true, runValidators: true}
     )
+    .orFail(() => {
+      const error = new Error('Передан несуществующий _id карточки.');
+      error.statusCode = 404;
+      throw error;
+    })
     .then((card) => res.send({ data: card }))
     .catch((err) => {
-      if (err.errors.about.name === 'ValidatorError') {
+      if (err.name === 'ValidatorError') {
         const ERROR_CODE = 400;
         res
           .status(ERROR_CODE)
           .send({
             message: 'Переданы некорректные данные для постановки лайка.',
           });
+      } else if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Передан невалидный _id карточки.' });
       }
-      if (err.errors.about.name === 'DocumentNotFoundError') {
-        const ERROR_CODE = 404;
-        res
-          .status(ERROR_CODE)
-          .send({ message: 'Передан несуществующий _id карточки.' });
-      } else {
+      else {
         const ERROR_CODE = 500;
         res
           .status(ERROR_CODE)
@@ -106,26 +103,30 @@ module.exports.dislikeCard = (req, res) => {
     .findByIdAndUpdate(
       req.params.cardId,
       { $pull: { likes: req.user._id } }, // убрать _id из массива
-      { new: true },
+      { new: true, runValidators: true}
     )
+    .orFail(() => {
+      const error = new Error('Передан несуществующий _id карточки.');
+      error.statusCode = 404;
+      throw error;
+    })
     .then((card) => res.send({ data: card }))
     .catch((err) => {
-      if (err.errors.about.name === 'ValidatorError') {
+      if (err.name === 'ValidatorError') {
         const ERROR_CODE = 400;
         res
           .status(ERROR_CODE)
-          .send({ message: 'Переданы некорректные данные для снятии лайка.' });
+          .send({
+            message: 'Переданы некорректные данные для снятия лайка.',
+          });
+      } else if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Передан невалидный _id карточки.' });
       }
-      if (err.errors.about.name === 'DocumentNotFoundError') {
-        const ERROR_CODE = 404;
-        res
-          .status(ERROR_CODE)
-          .send({ message: 'Передан несуществующий _id карточки.' });
-      } else {
+      else {
         const ERROR_CODE = 500;
         res
           .status(ERROR_CODE)
           .send({ message: `Произошла ошибка: ${err.name} ${err.message}` });
       }
     });
-};
+  }
