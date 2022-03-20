@@ -39,15 +39,20 @@ module.exports.getUserById = (req, res) => {
     });
 };
 
+// тут с about проблемы
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
   User
-    .create({ name, about, avatar })
+    .create({ name, about, avatar }, {
+      new: true,
+      runValidators: true
+    })
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.errors.name.name === 'ValidatorError') {
+      if (err.name === 'ValidatorError') {
         // const ERROR_CODE = 400;
+        console.log(err)
         res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя.' });
       } else {
         // const ERROR_CODE = 500;
