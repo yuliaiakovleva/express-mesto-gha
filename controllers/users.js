@@ -98,7 +98,7 @@ User.findOne({ email })
       email,
       password: hash,
     }))
-    .then((answer) => res.send({ data: answer}))
+    .then((answer) => res.send({ _id: answer._id, email: answer.email }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next (new BadRequestError('Переданы некорректные данные при создании пользователя.'));
