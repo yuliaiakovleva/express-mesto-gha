@@ -1,20 +1,39 @@
 const routes = require('express').Router(); // создали роутер
-const {
-  getUsers,
-  getUserById,
-  createUser,
-  editUser,
-  editAvatar,
-} = require('../controllers/users');
+const { getUsers, getUserById, editUser, editAvatar, getCurrentUser } = require('../controllers/users');
+const { celebrate, Joi } = require('celebrate');
+const { ObjectId } = require('mongoose').Types;
+const validator = require('validator');
+const { validateUserId } = require('../middlewares/validations');
+
+// заголовок authorization проверяю в app.js
 
 routes.get('/users', getUsers);
 
-routes.get('/users/:userId', getUserById);
+routes.get('/users/me', getCurrentUser);
 
-routes.post('/users', createUser);
+//тут нужно проверить req.params
+routes.get('/users/:userId', validateUserId, getUserById);
 
-routes.patch('/users/me', editUser);
+//тут нужно проверить поля name и about из body
+routes.patch('/users/me',
+celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30)
+    })
+}), editUser);
 
-routes.patch('/users/me/avatar', editAvatar);
+//тут нужно проверить поле avatar из body
+routes.patch('/users/me/avatar',
+celebrate({
+  body: Joi.object().keys({
+    avatar: Joi.string().required().custom((value, helpers) => {
+      if (validator.isURL(value)) {
+        return value;
+      }
+      return helpers.message('Невалидная ссылка');
+    }),
+    })
+}), editAvatar);
 
 module.exports = routes;
