@@ -1,11 +1,11 @@
 const errorHandler = (err, req, res, next) => {
-  const status = err.statusCode || 500 ;
+  const status = err.statusCode || 500;
   console.log(err.stack || err);
 
-  res.status(status). send({
+  res.status(status).send({
     err,
-    message: err.message
-  })
-}
+    message: err.message,
+  });
+};
 
 module.exports = errorHandler;

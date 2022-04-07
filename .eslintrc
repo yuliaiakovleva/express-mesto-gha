@@ -4,6 +4,9 @@
     "no-underscore-dangle": ["error", { "allow": ["_id"]}],
     // "treatUndefinedAsUnspecified": true
     "no-console": "off",
-    "varsIgnorePattern": "[iI]gnored"
-  }
+    "no-unused-vars": "off",
+    "max-classes-per-file": "off",
+    "consistent-return": "off",
+    "no-else-return": "off"
+    }
 }

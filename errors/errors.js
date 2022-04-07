@@ -1,4 +1,3 @@
-
 class BadRequestError extends Error {
   constructor(message) {
     super(message);
@@ -35,11 +34,10 @@ class DoubleUseEmailError extends Error {
   }
 }
 
-
 module.exports = {
   NotFoundError,
   BadRequestError,
   DoubleUseEmailError,
   UnauthorizedError,
-  NoRightsError
-}
+  NoRightsError,
+};

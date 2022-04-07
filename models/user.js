@@ -22,7 +22,6 @@ const userSchema = new mongoose.Schema({
     validate: {
       validator: (str) => validator.isURL(str),
       message: 'Введите ссылку',
-      // подумать тут над фразой
     },
   },
   email: {
@@ -39,13 +38,12 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    minlength: 8,
-    // спрятали пароль при get запросах
+    // спрятали пароль при get запросах с методами find
     select: false,
   },
 });
 
-userSchema.statics.findUserByCredentials = function (email, password) {
+userSchema.statics.findUserByCredentials = function findByCredentials(email, password) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
